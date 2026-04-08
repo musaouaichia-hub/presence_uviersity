@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>نظام الحضور </title>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@400;600;700;900&display=swap');
@@ -56,6 +57,38 @@ input:focus { border-color: var(--accent); }
 .admin-list-item { padding: 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
 .stat-box { display: flex; justify-content: space-around; margin-bottom: 15px; }
 .stat-item { text-align: center; background: var(--surface); padding: 10px; border-radius: 10px; flex: 1; margin: 0 5px; }
+  /* --- AJOUTE LE NOUVEAU CSS ICI --- */
+        .group-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .group-item {
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            color: var(--text-muted);
+            font-weight: bold;
+        }
+
+        /* On cache le bouton radio standard */
+        .group-item input {
+            display: none;
+        }
+
+        /* Style quand le groupe est sélectionné */
+        .group-item:has(input:checked) {
+            background: rgba(29, 111, 164, 0.2);
+            border-color: var(--gold);
+            color: var(--gold);
+            box-shadow: 0 0 10px rgba(240, 165, 0, 0.2);
+        }
 </style>
 </head>
 <body>
@@ -64,19 +97,20 @@ input:focus { border-color: var(--accent); }
     <div class="bg-orb orb1"></div>
     <div class="bg-orb orb2"></div>
     <div class="content-wrap">
-       <h1>  - جمعية العلماء المسلمين الجزائريين – وهران</h1>
-        <h1> - نادي البصائر – كاسطور</h1>
+       <h1> University of Science and Technology Mohammed Boudiaf Oran</h1>
+        <h1> Faculty of Physics</h1>
+        <h1> Department of Basics Physics</h1>
         <div style="font-size: 50px; margin-bottom: 10px;">🎓</div>
        
-        <h1 class="landing-title">الدورة العلمية <span>الربيعية</span><br><small style="font-size: 16px; opacity: 0.7;">لعام 1447 / 2026</small></h1>
-        <div class="landing-date-badge" id="landing-date">📅 جاري التحميل...</div>
+        <h1 class="landing-title">Computer Science Lab</span><br><small style="font-size: 16px; opacity: 0.7;">لعام 1447 / 2026</small></h1>
+        <div class="landing-date-badge" id="landing-date">📅 loading...</div>
         
         <div style="padding: 0 20px;">
             <button class="land-btn land-btn-student" onclick="goToStudentForm()">
-                <span>📱</span> <span>تسجيل حضور طالب</span>
+                <span>📱</span> <span>Student Attendance Registration</span>
             </button>
             <button class="land-btn land-btn-admin" onclick="showPage('page-admin-login')">
-                <span>🔐</span> <span>فضاء الأستاذ</span>
+                <span>🔐</span> <span>Teacher’s Area</span>
             </button>
         </div>
     </div>
@@ -84,8 +118,8 @@ input:focus { border-color: var(--accent); }
 
 <div class="page" id="page-student">
     <div class="header-small">
-        <h2>تسجيل الحضور</h2>
-        <p style="color:var(--text-muted); font-size: 13px;">يرجى إدخال اسمك واختيار الحصة</p>
+        <h2>Student Attendance Registration</h2>
+        <p style="color:var(--text-muted); font-size: 13px;">Enter your name</p>
     </div>
     <div class="card">
         <label>اللقب (NOM)</label>
@@ -93,18 +127,24 @@ input:focus { border-color: var(--accent); }
         <label>الاسم (PRENOM)</label>
         <input type="text" id="s-prenom" placeholder="مثال: أحمد">
     </div>
-    <div class="card">
-        <p style="text-align:center; font-size: 14px; margin-bottom: 10px;">اختر الحصص التي حضرتها:</p>
-        <div class="slot-grid">
-            <button class="slot-btn" id="btn-m" onclick="toggleSlot('m')">
-                <span class="slot-emoji">☀️</span>بعد العصر
-            </button>
-            <button class="slot-btn" id="btn-e" onclick="toggleSlot('e')">
-                <span class="slot-emoji">🌙</span> بعد المغرب
-            </button>
-        </div>
-        <button class="submit-btn" onclick="submitPresence()">تأكيد التسجيل ✅</button>
-        <p onclick="showPage('page-landing')" style="text-align:center; margin-top:15px; font-size:13px; color:var(--text-muted); cursor:pointer;">← العودة للرئيسية</p>
+  <div class="card">
+    <p style="text-align:center; margin-bottom:15px;">اختر فوجك (Groupe) :</p>
+    <div class="group-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+        <label class="group-item">
+            <input type="radio" name="groupe" value="G1"> <span>G1</span>
+        </label>
+        <label class="group-item">
+            <input type="radio" name="groupe" value="G2"> <span>G2</span>
+        </label>
+        <label class="group-item">
+            <input type="radio" name="groupe" value="G3"> <span>G3</span>
+        </label>
+        <label class="group-item">
+            <input type="radio" name="groupe" value="G4"> <span>G4</span>
+        </label>
+        <label class="group-item">
+            <input type="radio" name="groupe" value="G5"> <span>G5</span>
+        </label>
     </div>
 </div>
 
@@ -166,19 +206,26 @@ function submitPresence() {
     const nom = document.getElementById('s-nom').value.trim();
     const pre = document.getElementById('s-prenom').value.trim();
     
-    if(!nom || !pre) return alert("يرجى إدخال اللقب والاسم");
-    if(!selM && !selE) return alert("يرجى اختيار حصة واحدة على الأقل");
+    // Récupérer le groupe coché
+    const groupeRadio = document.querySelector('input[name="groupe"]:checked');
+    
+    if(!nom || !pre || !groupeRadio) {
+        return alert("يرجى إدخال الاسم واللقب واختيار الفوج");
+    }
 
-    // L'URL que vous avez copiée à l'étape 2
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyuLboCGVeLwRuvBamj4atmZhMZdJQ9OuPQjhrqQGIaSVcYxFNb9F9USVyGgf7D_PWwJA/exec";
+    const groupeValue = groupeRadio.value;
+    const SCRIPT_URL = "TON_URL_ICI";
 
     const data = {
-        n: nom, p: pre,
-        m: selM ? "حاضر" : "غائب",
-        e: selE ? "حاضر" : "غائب",
+        n: nom,
+        p: pre,
+        g: groupeValue, // Le groupe (G1, G2...)
         d: new Date().toLocaleDateString('ar-DZ'),
         t: new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'})
     };
+
+    // ... (Reste du code fetch comme avant)
+}
 
     // Afficher un message de chargement
     const btn = document.querySelector('.submit-btn');
