@@ -73,7 +73,7 @@
 
 <div class="page active" id="page-landing">
     <div class="content-wrap">
-        <h1>USTO-MB Oran</h1>
+        <h1style="opacity: 10;">University of Science and Technology-MB Oran</h1>
         <h3 style="opacity: 0.9;">Faculty of Physics</h3>
         <h3 style="opacity: 0.8;">Department of Basic Physics</h3>
         <h1 style="margin: 20px 0; color: var(--gold);">Computer Science Lab</h1>
@@ -151,14 +151,15 @@ function checkStatus() {
 }
 
 function checkIfAlreadyDone() {
-    if (localStorage.getItem('done_' + new Date().toLocaleDateString())) {
+ /*   if (localStorage.getItem('done_' + new Date().toLocaleDateString())) {
         document.getElementById('student-content').innerHTML = `
             <div style="text-align:center; padding:30px;">
                 <div style="font-size:60px;">🚫</div>
                 <h2 style="color:var(--gold); margin:15px 0;">تم التسجيل سابقا</h2>
                 <p>You have already registered your attendance today.</p>
             </div>`;
-    }
+    }*/
+    return;
 }
 
 function showPage(id) {
@@ -190,7 +191,7 @@ function submitPresence() {
 
     fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) })
     .then(() => {
-        localStorage.setItem('done_' + new Date().toLocaleDateString(), 'true');
+        //localStorage.setItem('done_' + new Date().toLocaleDateString(), 'true');
         document.getElementById('success-msg').innerText = "شكراً لك " + pre + "، تم تسجيل حضورك.";
         showPage('page-success');
     })
