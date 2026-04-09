@@ -5,67 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>نظام الحضور الجامعي</title>
     <style>
-       body { 
-    font-family: 'Tajawal', sans-serif; 
-    /* Remplacez l'URL ci-dessous par le lien de votre image ou figure */
-    background: linear-gradient(rgba(10, 14, 26, 0.8), rgba(10, 14, 26, 0.8)), 
-                url('usto.jpg'); 
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    color: var(--text); 
-    max-width: 430px; 
-    margin: 0 auto; 
-    direction: rtl; 
-    min-height: 100vh;
-}
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@400;600;700;900&display=swap');
+
+        :root {
+            --bg: #0a0e1a; --surface: #111827; --card: #1a2235; --border: #2a3548;
+            --accent: #1d6fa4; --gold: #f0a500; --green: #10b981; --text: #f1f5f9; --text-muted: #64748b;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--text); max-width: 430px; margin: 0 auto; direction: rtl; }
+
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+            /* Arrière-plan avec image usto.jpg */
+            background: linear-gradient(rgba(10, 14, 26, 0.75), rgba(10, 14, 26, 0.75)), 
+                        url('usto.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text); 
+            max-width: 430px; 
+            margin: 0 auto; 
+            direction: rtl; 
+            min-height: 100vh;
+        }
+
         .page { display: none; min-height: 100vh; flex-direction: column; }
         .page.active { display: flex; }
+
         #page-landing { align-items: center; justify-content: center; padding: 40px 24px; text-align: center; }
-        .landing-date-badge { background: var(--card); border: 1px solid var(--border); border-radius: 30px; padding: 8px 20px; font-size: 14px; color: var(--gold); margin-bottom: 40px; display: inline-block; }
+
+        .landing-date-badge { 
+            background: rgba(26, 34, 53, 0.8); 
+            border: 1px solid var(--border); 
+            border-radius: 30px; 
+            padding: 8px 20px; 
+            font-size: 14px; 
+            color: var(--gold); 
+            margin-bottom: 40px; 
+            display: inline-block; 
+        }
+
         .land-btn { width: 100%; padding: 18px; border-radius: 16px; border: none; font-weight: 700; cursor: pointer; margin-bottom: 14px; display: flex; align-items: center; gap: 15px; justify-content: center; }
         .land-btn-student { background: linear-gradient(135deg, var(--gold), #d48f00); color: #0a0e1a; }
-        .land-btn-admin { background: var(--card); color: var(--text); border: 1px solid var(--border); }
-        /* Cherchez cette partie dans votre <style> */
-.card { 
-    background: rgba(26, 34, 53, 0.75); /* Fond sombre à 75% de transparence */
-    backdrop-filter: blur(10px);       /* Effet de flou sur l'image de fond */
-    -webkit-backdrop-filter: blur(10px); /* Pour la compatibilité iPhone/Safari */
-    border: 1px solid rgba(255, 255, 255, 0.1); 
-    border-radius: 16px; 
-    padding: 20px; 
-    margin: 15px; 
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-}
-        input { width: 100%; padding: 14px; background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; color: white; margin-bottom: 15px; text-align: right; outline: none; }
+        .land-btn-admin { background: rgba(26, 34, 53, 0.9); color: var(--text); border: 1px solid var(--border); }
+
+        /* Style des cartes avec transparence (Glassmorphism) */
+        .card { 
+            background: rgba(26, 34, 53, 0.75); 
+            backdrop-filter: blur(10px);       
+            -webkit-backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 16px; 
+            padding: 20px; 
+            margin: 15px; 
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        input { width: 100%; padding: 14px; background: rgba(17, 24, 39, 0.8); border: 1.5px solid var(--border); border-radius: 12px; color: white; margin-bottom: 15px; text-align: right; outline: none; }
         .group-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .group-item { background: var(--surface); border: 1.5px solid var(--border); padding: 12px; border-radius: 12px; text-align: center; cursor: pointer; color: var(--text-muted); }
+        .group-item { background: rgba(17, 24, 39, 0.6); border: 1.5px solid var(--border); padding: 12px; border-radius: 12px; text-align: center; cursor: pointer; color: var(--text-muted); }
         .group-item input { display: none; }
-        .group-item:has(input:checked) { border-color: var(--gold); color: var(--gold); background: rgba(240,165,0,0.1); }
+        .group-item:has(input:checked) { border-color: var(--gold); color: var(--gold); background: rgba(240,165,0,0.2); }
         .submit-btn { width: 100%; padding: 18px; background: var(--gold); color: #0a0e1a; border: none; border-radius: 15px; font-weight: 900; font-size: 18px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="page active" id="page-landing">
-    /* Cherchez cette partie dans votre <style> */
-.card { 
-    background: rgba(26, 34, 53, 0.75); /* Fond sombre à 75% de transparence */
-    backdrop-filter: blur(10px);       /* Effet de flou sur l'image de fond */
-    -webkit-backdrop-filter: blur(10px); /* Pour la compatibilité iPhone/Safari */
-    border: 1px solid rgba(255, 255, 255, 0.1); 
-    border-radius: 16px; 
-    padding: 20px; 
-    margin: 15px; 
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-}
     <div class="content-wrap">
         <h1>USTO-MB Oran</h1>
-        <h2>Faculty of Physics</h2>
-            <h2>Department of Basic Physics<h2>
-        <h1 style="margin: 10px 0;">Computer Science Lab</h1>
+        <h3 style="opacity: 0.9;">Faculty of Physics</h3>
+        <h3 style="opacity: 0.8;">Department of Basic Physics</h3>
+        <h1 style="margin: 20px 0; color: var(--gold);">Computer Science Lab</h1>
         <div class="landing-date-badge" id="landing-date">📅 loading...</div>
         <div style="padding: 0 20px;">
             <button class="land-btn land-btn-student" onclick="goToStudentForm()">📱 Student Attendance</button>
@@ -135,7 +146,8 @@ function checkStatus() {
         } else {
             checkIfAlreadyDone();
         }
-    });
+    })
+    .catch(err => console.error("Erreur Statut:", err));
 }
 
 function checkIfAlreadyDone() {
@@ -162,13 +174,11 @@ function submitPresence() {
     const grp = document.querySelector('input[name="groupe"]:checked');
     const btn = document.getElementById('btn-submit');
 
-    // 1. Vérification des champs
     if(!nom || !pre || !grp) return alert("يرجى إدخال جميع المعلومات !");
 
-    // 2. CHANGEMENT VISUEL : On désactive le bouton et on affiche le chargement
-    btn.disabled = true; // Empêche de cliquer deux fois
-    btn.innerText = "... جاري الإرسال | Loading"; // Change le texte
-    btn.style.opacity = "0.7"; // Le rend un peu transparent
+    btn.disabled = true;
+    btn.innerText = "... جاري الإرسال | Loading";
+    btn.style.opacity = "0.7";
 
     const data = { 
         n: nom, 
@@ -178,16 +188,13 @@ function submitPresence() {
         t: new Date().toLocaleTimeString() 
     };
 
-    // 3. ENVOI DES DONNÉES
     fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) })
     .then(() => {
-        // Succès : On bloque le téléphone pour aujourd'hui
         localStorage.setItem('done_' + new Date().toLocaleDateString(), 'true');
         document.getElementById('success-msg').innerText = "شكراً لك " + pre + "، تم تسجيل حضورك.";
         showPage('page-success');
     })
     .catch(() => {
-        // Erreur : On réactive le bouton pour permettre de réessayer
         alert("خطأ في الاتصال | Error");
         btn.disabled = false;
         btn.innerText = "تأكيد الحضور ✅";
@@ -200,7 +207,7 @@ function checkAdmin() {
         showPage('page-landing');
         alert("Accès autorisé");
     } else {
-        alert("خطأ");
+        alert("كلمة المرور خاطئة!");
     }
 }
 </script>
