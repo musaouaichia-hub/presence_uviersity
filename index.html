@@ -112,30 +112,55 @@ label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom
 </div>
 
 <script>
-  window.onload = function() {
-    const SCRIPT_URL = "VOTRE_URL_ICI";
-    
-    // On demande au Google Sheet si on peut afficher le formulaire
+const ADMIN_PASSWORD = 'prof2024';
+const SCRIPT_URL = "TON_URL_GOOGLE_APPS_SCRIPT_ICI"; // <--- VERIFIE BIEN CETTE URL
+
+// 1. EXECUTION AU CHARGEMENT
+window.onload = function() {
+    // Affichage de la date sur la page d'accueil
+    const today = new Date();
+    const dateStr = today.toLocaleDateString('ar-DZ', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+    document.getElementById('landing-date').innerText = "📅 " + dateStr;
+
+    // Vérifier si le cours est OUVERT ou FERME
+    checkStatus();
+};
+
+function checkStatus() {
     fetch(SCRIPT_URL)
     .then(response => response.text())
     .then(status => {
-        if (status.trim() !== "OUVERT") {
-            document.body.innerHTML = `
-                <div style="text-align:center; padding:50px; color:white; background:#0a0e1a; height:100vh;">
-                    <div style="font-size:50px;">🔒</div>
-                    <h2>التسجيل مغلق حاليا</h2>
-                    <p> Registration is closed. Please wait for the teacher's permission..</p>
+        const cleanStatus = status.trim();
+        if (cleanStatus !== "OUVERT") {
+            // Si c'est fermé, on remplace le contenu par un message de verrouillage
+            document.getElementById('page-student').innerHTML = `
+                <div class="card" style="text-align:center; padding:50px; background: var(--card);">
+                    <div style="font-size:60px; margin-bottom:20px;">🔒</div>
+                    <h2 style="color:var(--gold); margin-bottom:15px;">التسجيل مغلق حاليا</h2>
+                    <p style="color:var(--text); line-height:1.6;">L'enregistrement est fermé. <br> Veuillez attendre l'autorisation du professeur en salle.</p>
+                    <button class="submit-btn" onclick="location.reload()" style="margin-top:20px; font-size:14px; padding:10px;">Actualiser ↻</button>
                 </div>`;
+        } else {
+            // Si c'est ouvert, on vérifie si l'étudiant a déjà cliqué aujourd'hui
+            checkIfAlreadyDone();
         }
-    });
-};
-const ADMIN_PASSWORD = 'prof_mus_2026@#';
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxs_8Fn8RjIyq5YcTlXK0bpz8xvNQReoZ1b5yu1CDJwQ4f6rSmjS_fbpY2bauiq-p8n9A/exec";
+    })
+    .catch(err => console.error("Erreur Statut:", err));
+}
 
-// Affichage de la date
-const today = new Date();
-const dateStr = today.toLocaleDateString('ar-DZ', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
-document.getElementById('landing-date').innerText = "📅 " + dateStr;
+function checkIfAlreadyDone() {
+    const todayKey = new Date().toLocaleDateString('fr-FR');
+    const hasRegistered = localStorage.getItem('done_' + todayKey);
+
+    if (hasRegistered) {
+        document.getElementById('page-student').innerHTML = `
+            <div class="card" style="text-align:center; padding:50px; background: var(--card);">
+                <div style="font-size:60px; margin-bottom:20px;">🚫</div>
+                <h2 style="color:var(--gold); margin-bottom:15px;">تم التسجيل سابقا</h2>
+                <p style="color:var(--text);">Vous avez déjà enregistré votre présence depuis cet appareil aujourd'hui.</p>
+            </div>`;
+    }
+}
 
 function showPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -147,24 +172,6 @@ function goToStudentForm() {
     showPage('page-student');
 }
 
-// --- 1. AU CHARGEMENT : Bloquer si déjà fait aujourd'hui ---
-window.onload = function() {
-    // Vérifier le statut OUVERT/FERME (ton code actuel)
-    checkStatus(); 
-
-    // Vérifier si l'étudiant a déjà cliqué aujourd'hui
-    const hasRegistered = localStorage.getItem('done_' + new Date().toLocaleDateString());
-    if (hasRegistered) {
-        document.getElementById('page-student').innerHTML = `
-            <div class="card" style="text-align:center; padding:40px;">
-                <div style="font-size:50px;">🚫</div>
-                <h2 style="color:var(--gold)">Désolé !</h2>
-                <p>Vous avez déjà enregistré une présence depuis cet appareil aujourd'hui.</p>
-            </div>`;
-    }
-};
-
-// --- 2. LA FONCTION D'ENVOI ---
 function submitPresence() {
     const nom = document.getElementById('s-nom').value.trim();
     const pre = document.getElementById('s-prenom').value.trim();
@@ -172,11 +179,11 @@ function submitPresence() {
     const btn = document.getElementById('btn-submit');
 
     if(!nom || !pre || !groupeRadio) {
-        return alert("Veuillez remplir tous les champs !");
+        return alert("يرجى إدخال جميع المعلومات !");
     }
 
-    // ACTION : Le bouton disparaît immédiatement après le clic
-    btn.style.display = 'none'; 
+    // DISPARITION DU BOUTON
+    btn.style.display = 'none';
 
     const data = {
         n: nom,
@@ -192,24 +199,25 @@ function submitPresence() {
         body: JSON.stringify(data)
     })
     .then(() => {
-        // On marque le téléphone comme "ayant déjà fait le travail"
-        localStorage.setItem('done_' + new Date().toLocaleDateString(), 'true');
+        // Enregistrer le blocage dans le téléphone
+        const todayKey = new Date().toLocaleDateString('fr-FR');
+        localStorage.setItem('done_' + todayKey, 'true');
         
-        document.getElementById('success-msg').innerText = "Done " + pre + ", recorded.";
+        document.getElementById('success-msg').innerText = "شكراً لك " + pre + "، تم تسجيل حضورك.";
         showPage('page-success');
     })
     .catch(error => {
-        alert("Erreur réseau");
-        btn.style.display = 'block'; // On fait réapparaître le bouton seulement en cas d'échec réel
+        alert("خطأ في الاتصال");
+        btn.style.display = 'block'; // Réapparaît si ça échoue
     });
 }
 
 function checkAdmin() {
     if(document.getElementById('admin-pwd').value === ADMIN_PASSWORD) {
-        alert("Admin feature is linked to Google Sheets");
+        alert("Accès autorisé au tableau Google Sheets");
         showPage('page-landing');
     } else {
-        alert("Wrong Password!");
+        alert("كلمة المرور خاطئة!");
     }
 }
 </script>
