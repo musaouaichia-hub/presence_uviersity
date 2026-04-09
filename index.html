@@ -112,6 +112,23 @@ label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom
 </div>
 
 <script>
+  window.onload = function() {
+    const SCRIPT_URL = "VOTRE_URL_ICI";
+    
+    // On demande au Google Sheet si on peut afficher le formulaire
+    fetch(SCRIPT_URL)
+    .then(response => response.text())
+    .then(status => {
+        if (status.trim() !== "OUVERT") {
+            document.body.innerHTML = `
+                <div style="text-align:center; padding:50px; color:white; background:#0a0e1a; height:100vh;">
+                    <div style="font-size:50px;">🔒</div>
+                    <h2>التسجيل مغلق حاليا</h2>
+                    <p>L'enregistrement est fermé. Veuillez attendre l'autorisation du professeur.</p>
+                </div>`;
+        }
+    });
+};
 const ADMIN_PASSWORD = 'prof_mus_2026@#';
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxs_8Fn8RjIyq5YcTlXK0bpz8xvNQReoZ1b5yu1CDJwQ4f6rSmjS_fbpY2bauiq-p8n9A/exec";
 
