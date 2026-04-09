@@ -90,7 +90,7 @@ label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom
             <label class="group-item"><input type="radio" name="groupe" value="G75"> G75</label>
             <label class="group-item"><input type="radio" name="groupe" value="G79"> G79</label>
         </div>
-        <button class="submit-btn" onclick="submitPresence()">تأكيد الحضور ✅</button>
+        <button class="submit-btn" id="btn-submit" onclick="submitPresence()">تأكيد الحضور ✅</button>
         <p onclick="showPage('page-landing')" style="text-align:center; margin-top:15px; font-size:12px; color:var(--text-muted); cursor:pointer;">← Back</p>
     </div>
 </div>
@@ -147,18 +147,36 @@ function goToStudentForm() {
     showPage('page-student');
 }
 
+// --- 1. AU CHARGEMENT : Bloquer si déjà fait aujourd'hui ---
+window.onload = function() {
+    // Vérifier le statut OUVERT/FERME (ton code actuel)
+    checkStatus(); 
+
+    // Vérifier si l'étudiant a déjà cliqué aujourd'hui
+    const hasRegistered = localStorage.getItem('done_' + new Date().toLocaleDateString());
+    if (hasRegistered) {
+        document.getElementById('page-student').innerHTML = `
+            <div class="card" style="text-align:center; padding:40px;">
+                <div style="font-size:50px;">🚫</div>
+                <h2 style="color:var(--gold)">Désolé !</h2>
+                <p>Vous avez déjà enregistré une présence depuis cet appareil aujourd'hui.</p>
+            </div>`;
+    }
+};
+
+// --- 2. LA FONCTION D'ENVOI ---
 function submitPresence() {
     const nom = document.getElementById('s-nom').value.trim();
     const pre = document.getElementById('s-prenom').value.trim();
     const groupeRadio = document.querySelector('input[name="groupe"]:checked');
-    
+    const btn = document.getElementById('btn-submit');
+
     if(!nom || !pre || !groupeRadio) {
-        return alert("Veuillez remplir votre nom et choisir un groupe !");
+        return alert("Veuillez remplir tous les champs !");
     }
 
-    const btn = document.querySelector('.submit-btn');
-    btn.innerText = "... Sending";
-    btn.disabled = true;
+    // ACTION : Le bouton disparaît immédiatement après le clic
+    btn.style.display = 'none'; 
 
     const data = {
         n: nom,
@@ -174,13 +192,15 @@ function submitPresence() {
         body: JSON.stringify(data)
     })
     .then(() => {
-        document.getElementById('success-msg').innerText = "Done " + pre + ", your attendance is recorded.";
+        // On marque le téléphone comme "ayant déjà fait le travail"
+        localStorage.setItem('done_' + new Date().toLocaleDateString(), 'true');
+        
+        document.getElementById('success-msg').innerText = "Done " + pre + ", recorded.";
         showPage('page-success');
     })
     .catch(error => {
-        alert("Connection Error");
-        btn.innerText = "Try Again";
-        btn.disabled = false;
+        alert("Erreur réseau");
+        btn.style.display = 'block'; // On fait réapparaître le bouton seulement en cas d'échec réel
     });
 }
 
