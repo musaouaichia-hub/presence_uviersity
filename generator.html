@@ -1,0 +1,20 @@
+function updateQR() {
+    // 1. On crée un token basé sur le temps (Heure + Minute)
+    const now = new Date();
+    const timeKey = now.getHours().toString() + now.getMinutes().toString();
+    // Optionnel: On peut encoder ce chiffre pour qu'il ne soit pas évident
+    const token = btoa(timeKey); 
+
+    // 2. On génère l'URL complète
+    const baseURL = "https://ton-pseudo.github.io/presence/index.html";
+    const fullURL = baseURL + "?token=" + token;
+
+    // 3. On met à jour l'image du QR Code (via une API gratuite)
+    const qrImg = document.getElementById('qr-image');
+    qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(fullURL);
+    
+    document.getElementById('timer').innerText = "Prochain code dans : " + (60 - now.getSeconds()) + "s";
+}
+
+// Rafraîchir toutes les secondes pour le compte à rebours
+setInterval(updateQR, 1000);
