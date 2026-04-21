@@ -150,10 +150,16 @@ function checkIfAlreadyDone() {
 }
 
 function submitPresence() {
+    const btn = document.getElementById('btn-submit');
+    // --- PROTECTION INSTANTANÉE ---
+    if (btn.disabled) return; // Si déjà en cours, on ne fait rien
+    btn.disabled = true;      // On désactive le bouton tout de suite
+    btn.innerText = "جاري الإرسال... (Patientez)"; 
+    // ------------------------------
     const nom = document.getElementById('s-nom').value.trim();
     const pre = document.getElementById('s-prenom').value.trim();
     const grp = document.querySelector('input[name="groupe"]:checked');
-    const btn = document.getElementById('btn-submit');
+    
 
     if(!nom || !pre || !grp) return alert("يرجى إدخال جميع المعلومات !");
 
